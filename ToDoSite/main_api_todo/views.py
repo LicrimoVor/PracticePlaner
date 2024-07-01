@@ -6,6 +6,10 @@ from rest_framework.views import APIView
 from .models import User, Team, Task
 from .serializers import UserSerializer, TeamSerializer, TaskSerializer
 
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+
 # Миксины для User
 class UserListCreateAPIView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -54,3 +58,19 @@ class TeamTasksListAPIView(APIView):
             return Response(serializer.data)
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def registration(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # получаем имя пользователя и пароль из формы
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            # выполняем аутентификацию
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('/')
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
