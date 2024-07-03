@@ -1,6 +1,7 @@
 # urls.py
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -15,4 +16,10 @@ urlpatterns = [
 
     path('user-teams/<uuid:user_id>/', views.UserTeamsListAPIView.as_view(), name='user-teams-list'),
     path('team-tasks/<uuid:team_id>/', views.TeamTasksListAPIView.as_view(), name='team-tasks-list'),
+
+    path('register/', views.register, name='register'),
+    path('login/', views.login_view, name='login'),
+    path ('profile/', views.profile_view, name = 'profile'),
+    path('logout/',  views.login_view, name='logout'),
+    path('edit-profile/', views.edit_profile, name='edit_profile'),
 ]

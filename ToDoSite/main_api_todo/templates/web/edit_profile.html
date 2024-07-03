@@ -1,0 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="{% static 'css/edit_profile.css' %}">
+</head>
+<body>
+    <h2></h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить изменения</button>
+    </form>
+</body>
+</html>

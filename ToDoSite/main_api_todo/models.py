@@ -7,6 +7,40 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 
+from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext_lazy as _
+
+class CustomUserManager(BaseUserManager):
+    """
+    Custom user model manager where email is the unique identifiers
+    for authentication instead of usernames.
+    """
+    def create_user(self, email, password, **extra_fields):
+        """
+        Create and save a User with the given email and password.
+        """
+        if not email:
+            raise ValueError(_('The Email must be set'))
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, email, password, **extra_fields):
+        """
+        Create and save a SuperUser with the given email and password.
+        """
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError(_('Superuser must have is_staff=True.'))
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError(_('Superuser must have is_superuser=True.'))
+        return self.create_user(email, password, **extra_fields)
+
 class Team(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, null=False)
@@ -16,18 +50,21 @@ class Team(models.Model):
         return self.name
 
 
-class User(models.Model):
+class CustomUser(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=255, null=False)
-    second_name = models.CharField(max_length=255, null=False)
+    second_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255, blank=True, null=True)
-    login = models.CharField(max_length=255, null=False, unique=True)
+    username = None
     password = models.CharField(max_length=255, null=False)
-    mail = models.EmailField(max_length=255, null=False, unique=True)
+    email = models.EmailField(_('email address'), unique = True)
     team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL, related_name='members', blank=True)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+    objects = CustomUserManager()
 
     def __str__(self):
-        return f"{self.first_name} {self.second_name}"
+        return self.email
 
 
 @receiver(pre_save, sender=Team)
@@ -38,7 +75,7 @@ def set_team_author(sender, instance, *args, **kwargs):
 
 class Relationship(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -56,7 +93,7 @@ class Task(models.Model):
     description = models.TextField(null=False)
     deadline = models.DateField(null=False)
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='tasks')
-    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='tasks')
+    user = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL, related_name='tasks')
     changeable = models.IntegerField(
         choices=STATE_CHOICES,
         default=0,
