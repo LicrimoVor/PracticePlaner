@@ -1,10 +1,10 @@
 # serializers.py
 from rest_framework import serializers
-from .models import User, Team, Task
+from .models import CustomUser, Team, Task
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = '__all__'
 
 class TeamSerializer(serializers.ModelSerializer):
