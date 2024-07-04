@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Команда {{ team.name }} </title>
+    <link rel="stylesheet" href="{% static 'css/team_detail.css' %}">
+</head>
+<body>
+    <div class="team-detail-container">
+        <h1 class="team-detail-title">Детали команды</h1>
+        <p class="team-detail-text"><strong>Название:</strong> {{ team.name }}</p>
+        <p class="team-detail-text"><strong>Описание:</strong> {{ team.description }}</p>
+    </div>
+</body>
+</html>

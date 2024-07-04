@@ -10,7 +10,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.shortcuts import render, redirect
 
-from .forms import CustomUserCreationForm, UserEditForm
+from .forms import CustomUserCreationForm, UserEditForm, TeamForm, TaskForm
 from django.contrib.auth.decorators import login_required
 
 # Миксины для User
@@ -102,3 +102,41 @@ def edit_profile(request):
         form = UserEditForm(instance=request.user)
 
     return render(request, 'web/edit_profile.html', {'form': form})
+
+@login_required
+def main_page(request):
+    return render (request, 'web/mainpage.html')
+@login_required
+def create_team_view(request):
+    if request.method == 'POST':
+        form = TeamForm(request.POST)
+        if form.is_valid():
+            team = form.save(commit=False)
+            team.author = request.user.id
+            team.save()
+            return redirect('main_page')  # Перенаправляем на главную страницу или другую страницу
+    else:
+        form = TeamForm()
+    return render(request, 'web/create_team.html', {'form': form})
+@login_required
+def team_list_view (request):
+    teams = Team.objects.all()
+    return render (request, 'web/list_teams.html', {'teams': teams})
+@login_required
+def detail_team_view(request, pk):
+    team = get_object_or_404(Team, pk=pk)
+    context = {
+        'team': team
+    }
+    return render(request, 'web/team_detail.html', context)
+@login_required
+def create_task_view(request):
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save()
+            # Дополнительная логика после сохранения задачи
+            return redirect('task-list-create')  # Перенаправляем на список задач или другую страницу
+    else:
+        form = TaskForm()
+    return render(request, 'web/create_task.html', {'form': form})

@@ -4,6 +4,7 @@ from . import views
 from django.contrib.auth import views as auth_views
 
 
+
 urlpatterns = [
     path('users/', views.UserListCreateAPIView.as_view(), name='user-list-create'),
     path('users/<uuid:pk>/', views.UserRetrieveUpdateDestroyAPIView.as_view(), name='user-retrieve-update-destroy'),
@@ -22,4 +23,9 @@ urlpatterns = [
     path ('profile/', views.profile_view, name = 'profile'),
     path('logout/',  views.login_view, name='logout'),
     path('edit-profile/', views.edit_profile, name='edit_profile'),
+    path('', views.main_page, name='main_page'),
+    path('create-team/', views.create_team_view, name='create_team'),
+    path('team-list/', views.team_list_view, name='team_list'),
+    path('teams-detail/<uuid:pk>/', views.detail_team_view, name='detail_team_view'),
+    path('create-task/', views.create_task_view, name='create_task'),
 ]
