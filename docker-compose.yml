@@ -1,0 +1,33 @@
+version: "3.6"
+
+services:
+  todo:
+    build:
+      context: ToDoSite
+      dockerfile: .docker/Dockerfile
+    command: /bin/sh /todo/dev.sh
+    restart: unless-stopped
+    environment:
+      - DB_HOST=localhost
+      - DB_PORT=5432  # SQLite не требует порта
+      - DB_NAME=sqlite3
+      - DB_USER=sqlite3
+      - DB_PASSWORD=sqlite3
+    volumes:
+      - media_volume_test:/todo/media
+      - static_volume_test:/todo/static
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+    networks:
+      - test
+
+
+networks:
+  test:
+    driver: bridge
+
+volumes:
+  media_volume_test:
+  static_volume_test:
