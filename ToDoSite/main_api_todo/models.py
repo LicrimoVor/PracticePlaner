@@ -45,6 +45,7 @@ class Team(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, null=False)
     author = models.UUIDField()
+    description = models.CharField(max_length=255, null=False)
 
     def __str__(self):
         return self.name

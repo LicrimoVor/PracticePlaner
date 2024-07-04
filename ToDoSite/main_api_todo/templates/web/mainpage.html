@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mainpage.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'profile' %}">Профиль</a></li>
+                <li><a href="{% url 'team_list' %}">Команды</a></li>
+                <li><a href="{% url 'create_task' %}">Создать задачу</a></li>
+                <li><a href="{% url 'logout' %}">Выйти</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Добро пожаловать {{ user.first_name }}!</h1>
+        <div class="content">
+            <a class="button" href="{% url 'team_list' %}">Перейти в раздел Команды</a>
+        </div>
+    </main>
+</body>
+</html>

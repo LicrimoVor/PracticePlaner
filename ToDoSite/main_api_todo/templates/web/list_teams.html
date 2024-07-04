@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team List</title>
+    <link rel="stylesheet" href="{% static 'css/list_teams.css' %}">
+</head>
+<body>
+    <div class="team-list-container">
+        <h1>List of Teams</h1>
+        {% if teams %}
+            <ul class="team-list">
+                {% for team in teams %}
+                    <li>
+                        <a href="{% url 'detail_team_view' pk=team.pk%}">
+                            {{ team.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No teams found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
