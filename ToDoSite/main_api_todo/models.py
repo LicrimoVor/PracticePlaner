@@ -24,7 +24,6 @@ class User(models.Model):
     login = models.CharField(max_length=255, null=False, unique=True)
     password = models.CharField(max_length=255, null=False)
     mail = models.EmailField(max_length=255, null=False, unique=True)
-    team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL, related_name='members', blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.second_name}"

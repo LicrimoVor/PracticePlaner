@@ -2,7 +2,6 @@
 from django.urls import path
 from . import views
 
-
 urlpatterns = [
     path('users/', views.UserListCreateAPIView.as_view(), name='user-list-create'),
     path('users/<uuid:pk>/', views.UserRetrieveUpdateDestroyAPIView.as_view(), name='user-retrieve-update-destroy'),
@@ -13,6 +12,11 @@ urlpatterns = [
     path('tasks/', views.TaskListCreateAPIView.as_view(), name='task-list-create'),
     path('tasks/<uuid:pk>/', views.TaskRetrieveUpdateDestroyAPIView.as_view(), name='task-retrieve-update-destroy'),
 
-    path('user-teams/<uuid:user_id>/', views.UserTeamsListAPIView.as_view(), name='user-teams-list'),
+    path('user-teams/<uuid:user_id>/', views.UserTeamListAPIView.as_view(), name='user-teams-list'),
     path('team-tasks/<uuid:team_id>/', views.TeamTasksListAPIView.as_view(), name='team-tasks-list'),
+
+    path('teams-members/<uuid:team_id>/', views.TeamMembersListAPIView.as_view(), name='team-members'),
+    path('users-teams/<uuid:user_id>/', views.UserTeamsListAPIView.as_view(), name='user-teams'),
+    path('join-in-team/', views.JoinTeamAPIView.as_view(), name='join-team'),
+
 ]
