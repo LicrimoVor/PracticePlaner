@@ -103,7 +103,7 @@ def edit_profile(request):
 
     return render(request, 'web/edit_profile.html', {'form': form})
 
-@login_required
+
 def main_page(request):
     return render (request, 'web/mainpage.html')
 @login_required

@@ -22,6 +22,11 @@
         {% else %}
             <p>No teams found.</p>
         {% endif %}
+
+        <!-- Форма с CSRF-токеном -->
+        <form method="POST">
+            {% csrf_token %}
+        </form>
     </div>
 </body>
 </html>

@@ -12,10 +12,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
 #from django.urls import reverse_lazy
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR1 = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -62,11 +63,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ToDoSite.urls'
-
+CSRF_USE_SESSIONS = True
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'main_api_todo','templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,6 +80,10 @@ TEMPLATES = [
     },
 ]
 
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR1, 'main_api_todo', 'static'),  # Убедитесь, что путь указан правильно
+]
 WSGI_APPLICATION = 'ToDoSite.wsgi.application'
 
 
@@ -128,6 +133,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+LOGIN_URL = '/login/'  # Укажите путь к вашему пользовательскому URL для входа
+LOGIN_REDIRECT_URL = '/'  # URL для перенаправления после успешного входа
+LOGOUT_REDIRECT_URL = '/'  # URL для перенаправления после выхода
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -197,6 +206,7 @@ SIMPLE_JWT = {
 
 
 AUTH_USER_MODEL = 'main_api_todo.CustomUser'
+
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
