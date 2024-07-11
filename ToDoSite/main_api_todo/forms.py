@@ -36,3 +36,12 @@ class TaskForm(forms.ModelForm):
             'user': 'Автор',
             'changeable': 'Изменяемость'
         }
+
+class AddUserToTeamForm(forms.Form):
+    user = forms.ModelChoiceField(queryset=CustomUser.objects.all(), label="Пользователь")
+    team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Команда")
+
+class TeamForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ['name', 'description']

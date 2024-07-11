@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,8 +12,24 @@
         <h1 class="team-detail-title">Детали команды</h1>
         <p class="team-detail-text"><strong>Название:</strong> {{ team.name }}</p>
         <p class="team-detail-text"><strong>Описание:</strong> {{ team.description }}</p>
+
+        <!-- Список участников команды -->
+        <h2>Участники команды</h2>
+        <ul>
+            {% for member in team.members.all %}
+                <li>{{ member.first_name }} {{ member.last_name }}</li>
+            {% endfor %}
+        </ul>
+
+        <a href="{% url 'add_user_to_team' %}">Добавить пользователя в команду</a>
+
+        <!-- Форма редактирования команды -->
+        <h2>Редактировать команду</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Сохранить изменения</button>
+        </form>
     </div>
-        <button type="submit">Отправить</button>
-    </form>
 </body>
 </html>

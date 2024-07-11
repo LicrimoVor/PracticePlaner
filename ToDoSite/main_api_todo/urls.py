@@ -28,4 +28,6 @@ urlpatterns = [
     path('team-list/', views.team_list_view, name='team_list'),
     path('teams-detail/<uuid:pk>/', views.detail_team_view, name='detail_team_view'),
     path('create-task/', views.create_task_view, name='create_task'),
+
+    path('add_user_to_team/', views.add_user_to_team, name='add_user_to_team'),
 ]
