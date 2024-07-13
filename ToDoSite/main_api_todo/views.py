@@ -71,7 +71,7 @@ def register(request):
             return redirect('login')  # URL для перенаправления после регистрации
     else:
         form = CustomUserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'register.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':
@@ -79,16 +79,17 @@ def login_view(request):
         if form.is_valid():
             email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(request, username=email, password=password)
+            user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('profile')  # URL для перенаправления после входа
+                return redirect('main_page')  # URL для перенаправления после входа
     else:
         form = AuthenticationForm()
-    return render(request, 'registration/login.html', {'form': form})
+    return render(request, 'login.html', {'form': form})
 @login_required
 def profile_view(request):
-    return render(request, 'web/profile.html')
+    user = request.user
+    return render(request, 'profile.html', {'user': user})
 
 
 @login_required
@@ -101,11 +102,11 @@ def edit_profile(request):
     else:
         form = UserEditForm(instance=request.user)
 
-    return render(request, 'web/edit_profile.html', {'form': form})
+    return render(request, 'edit_profile.html', {'form': form})
 
 @login_required
 def main_page(request):
-    return render (request, 'web/mainpage.html')
+    return render (request, 'mainpage.html')
 @login_required
 def create_team_view(request):
     if request.method == 'POST':
@@ -117,18 +118,18 @@ def create_team_view(request):
             return redirect('main_page')  # Перенаправляем на главную страницу или другую страницу
     else:
         form = TeamForm()
-    return render(request, 'web/create_team.html', {'form': form})
+    return render(request, 'CreateTeam.html', {'form': form})
 @login_required
 def team_list_view (request):
     teams = Team.objects.all()
-    return render (request, 'web/list_teams.html', {'teams': teams})
+    return render (request, 'list_teams.html', {'teams': teams})
 @login_required
 def detail_team_view(request, pk):
     team = get_object_or_404(Team, pk=pk)
     context = {
         'team': team
     }
-    return render(request, 'web/team_detail.html', context)
+    return render(request, 'team_detail.html', context)
 @login_required
 def create_task_view(request):
     if request.method == 'POST':
@@ -139,4 +140,4 @@ def create_task_view(request):
             return redirect('task-list-create')  # Перенаправляем на список задач или другую страницу
     else:
         form = TaskForm()
-    return render(request, 'web/create_task.html', {'form': form})
+    return render(request, 'create_task.html', {'form': form})

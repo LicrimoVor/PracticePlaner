@@ -49,7 +49,37 @@ body {
     margin-bottom: 20px;
 }
 
-.main-content .icon {
-    width: 150px;
-    height: 150px;
+.profile-info {
+    background-color: #444;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: left;
+}
+
+.profile-info p {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+.profile-info strong {
+    color: #fff;
+}
+
+.edit-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #555;
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.edit-button:hover {
+    background-color: #666;
 }
