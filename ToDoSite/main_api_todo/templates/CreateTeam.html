@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать Команду</title>
+    <link rel="stylesheet" href="{% static 'css/CreateTeam.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li><a href="{% url 'profile' %}">Профиль</a></li>
+                <li><a href="#">Мои задачи</a></li>
+                <li><a href="#">Команды</a></li>
+                <li><a href="{% url 'create_team' %}">Создать команду</a></li>
+                <li><a href="#">Создать задачу</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h1>Создать Команду</h1>
+            <div class="profile-edit-form">
+                <form method="POST" action="{% url 'create_team' %}">
+                    {% csrf_token %}
+                    
+                    <label for="team_name">Название команды:</label>
+                    <input type="text" id="team_name" name="name" required>
+
+                    <label for="team_description">Описание команды:</label>
+                    <textarea id="team_description" name="description" required></textarea>
+
+                    <button type="submit">Создать</button>
+                    <a href="javascript:history.back()" class="edit-button">Назад</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

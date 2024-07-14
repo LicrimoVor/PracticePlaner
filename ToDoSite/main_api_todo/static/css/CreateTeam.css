@@ -49,7 +49,7 @@ body {
     margin-bottom: 20px;
 }
 
-.profile-info {
+.profile-edit-form {
     background-color: #444;
     padding: 20px;
     border-radius: 10px;
@@ -57,29 +57,38 @@ body {
     text-align: left;
 }
 
-.profile-info p {
-    margin: 10px 0;
-    font-size: 18px;
+.profile-edit-form form {
+    display: flex;
+    flex-direction: column;
 }
 
-.profile-info strong {
+.profile-edit-form label {
+    margin-bottom: 5px;
+    font-size: 18px;
     color: #fff;
 }
 
-.edit-button {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
+.profile-edit-form input, .profile-edit-form textarea {
+    margin-bottom: 15px;
+    padding: 10px;
     border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.profile-edit-form button, .profile-edit-form .edit-button {
+    padding: 10px;
+    border: none;
+    margin-bottom: 10px;
     border-radius: 5px;
     background-color: #555;
     color: #fff;
     font-size: 18px;
-    text-decoration: none;
     cursor: pointer;
     text-align: center;
+    text-decoration: none;
 }
 
-.edit-button:hover {
+.profile-edit-form button:hover, .profile-edit-form .edit-button:hover {
     background-color: #666;
 }

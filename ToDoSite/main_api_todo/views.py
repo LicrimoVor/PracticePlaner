@@ -10,10 +10,10 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.shortcuts import render, redirect
 
-from .forms import CustomUserCreationForm, UserEditForm, TeamForm, TaskForm, AddUserToTeamForm
+from .forms import CustomUserCreationForm, UserEditForm, TeamForm, TaskForm
 from django.contrib.auth.decorators import login_required
 
-
+# Миксины для User
 class UserListCreateAPIView(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
@@ -22,7 +22,7 @@ class UserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
 
-
+# Миксины для Team
 class TeamListCreateAPIView(generics.ListCreateAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
@@ -31,7 +31,7 @@ class TeamRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
 
-
+# Миксины для Task
 class TaskListCreateAPIView(generics.ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
@@ -40,7 +40,7 @@ class TaskRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
-
+# APIView для получения команд по id пользователя
 class UserTeamsListAPIView(APIView):
     def get(self, request, user_id):
         try:
@@ -51,7 +51,7 @@ class UserTeamsListAPIView(APIView):
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+# APIView для получения задач по id команды
 class TeamTasksListAPIView(APIView):
     def get(self, request, team_id):
         try:
@@ -68,10 +68,10 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('login')
+            return redirect('login')  # URL для перенаправления после регистрации
     else:
         form = CustomUserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'register.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':
@@ -79,16 +79,17 @@ def login_view(request):
         if form.is_valid():
             email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(request, username=email, password=password)
+            user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('profile')
+                return redirect('main_page')  # URL для перенаправления после входа
     else:
         form = AuthenticationForm()
-    return render(request, 'registration/login.html', {'form': form})
+    return render(request, 'login.html', {'form': form})
 @login_required
 def profile_view(request):
-    return render(request, 'web/profile.html')
+    user = request.user
+    return render(request, 'profile.html', {'user': user})
 
 
 @login_required
@@ -97,15 +98,15 @@ def edit_profile(request):
         form = UserEditForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect('profile')
+            return redirect('profile')  # перенаправление на страницу профиля после успешного сохранения
     else:
         form = UserEditForm(instance=request.user)
 
-    return render(request, 'web/edit_profile.html', {'form': form})
+    return render(request, 'edit_profile.html', {'form': form})
 
-
+@login_required
 def main_page(request):
-    return render (request, 'web/mainpage.html')
+    return render (request, 'mainpage.html')
 @login_required
 def create_team_view(request):
     if request.method == 'POST':
@@ -114,45 +115,29 @@ def create_team_view(request):
             team = form.save(commit=False)
             team.author = request.user.id
             team.save()
-            return redirect('main_page')
+            return redirect('main_page')  # Перенаправляем на главную страницу или другую страницу
     else:
         form = TeamForm()
-    return render(request, 'web/create_team.html', {'form': form})
+    return render(request, 'CreateTeam.html', {'form': form})
 @login_required
 def team_list_view (request):
     teams = Team.objects.all()
-    return render (request, 'web/list_teams.html', {'teams': teams})
+    return render (request, 'list_teams.html', {'teams': teams})
+@login_required
+def detail_team_view(request, pk):
+    team = get_object_or_404(Team, pk=pk)
+    context = {
+        'team': team
+    }
+    return render(request, 'team_detail.html', context)
 @login_required
 def create_task_view(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
             task = form.save()
-            return redirect('task-list-create')
+            # Дополнительная логика после сохранения задачи
+            return redirect('task-list-create')  # Перенаправляем на список задач или другую страницу
     else:
         form = TaskForm()
-    return render(request, 'web/create_task.html', {'form': form})
-
-@login_required
-def add_user_to_team(request):
-    if request.method == 'POST':
-        form = AddUserToTeamForm(request.POST)
-        if form.is_valid():
-            user = form.cleaned_data['user']
-            team = form.cleaned_data['team']
-            team.members.add(user)
-            return redirect('detail_team_view', pk=team.pk)
-    else:
-        form = AddUserToTeamForm()
-    return render(request, 'web/add_user_to_team.html', {'form': form})
-
-def detail_team_view(request, pk):
-    team = get_object_or_404(Team, pk=pk)
-    if request.method == 'POST':
-        form = TeamForm(request.POST, instance=team)
-        if form.is_valid():
-            form.save()
-            return redirect('detail_team_view', pk=team.pk)
-    else:
-        form = TeamForm(instance=team)
-    return render(request, 'web/team_detail.html', {'team': team, 'form': form})
+    return render(request, 'create_task.html', {'form': form})
