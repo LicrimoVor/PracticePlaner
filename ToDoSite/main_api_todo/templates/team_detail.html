@@ -1,17 +1,32 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Команда {{ team.name }} </title>
-    <link rel="stylesheet" href="{% static 'css/team_detail.css' %}">
+    <title>Детали Команды</title>
+    <link rel="stylesheet" href="{% static 'css/TeamDetail.css' %}">
 </head>
 <body>
-    <div class="team-detail-container">
-        <h1 class="team-detail-title">Детали команды</h1>
-        <p class="team-detail-text"><strong>Название:</strong> {{ team.name }}</p>
-        <p class="team-detail-text"><strong>Описание:</strong> {{ team.description }}</p>
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li><a href="{% url 'profile' %}">Профиль</a></li>
+                <li><a href="#">Мои задачи</a></li>
+                <li><a href="#">Команды</a></li>
+                <li><a href="{% url 'create_team' %}">Создать команду</a></li>
+                <li><a href="{% url 'create_task' %}">Создать задачу</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h1>Детали Команды</h1>
+            <div class="team-detail-container">
+                <h2>{{ team.name }}</h2>
+                <p><strong>Описание:</strong> {{ team.description }}</p>
+                <p><strong>Автор:</strong> {{ team.author }}</p>
+                <a href="javascript:history.back()" class="edit-button">Назад</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>

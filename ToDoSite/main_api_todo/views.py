@@ -136,8 +136,11 @@ def create_task_view(request):
         form = TaskForm(request.POST)
         if form.is_valid():
             task = form.save()
-            # Дополнительная логика после сохранения задачи
-            return redirect('task-list-create')  # Перенаправляем на список задач или другую страницу
+            return redirect('main_page')
     else:
         form = TaskForm()
-    return render(request, 'create_task.html', {'form': form})
+
+    teams = Team.objects.all()
+    users = CustomUser.objects.all()
+    return render(request, 'create_task.html', {'form': form, 'teams': teams, 'users': users})
+

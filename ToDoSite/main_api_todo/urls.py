@@ -26,6 +26,6 @@ urlpatterns = [
     path('main_page/', views.main_page, name='main_page'),
     path('create-team/', views.create_team_view, name='create_team'),
     path('team-list/', views.team_list_view, name='team_list'),
-    path('teams-detail/<uuid:pk>/', views.detail_team_view, name='detail_team_view'),
+    path('teams-detail/', views.detail_team_view, name='detail_team_view'),
     path('create-task/', views.create_task_view, name='create_task'),
 ]
