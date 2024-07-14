@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+    <div class="profile-container">
+        <h1>Профиль пользователя</h1>
+        <div class="profile-info">
+            <p><strong>Имя пользователя:</strong> {{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Команда:</strong> {{ user.team }}</p>
+            <a href="{% url 'logout' %}">Выйти</a>
+            <a href="{% url 'edit_profile' %}">Редактировать профиль</a>
+            <a href="{% url 'main_page' %}">Главная страница</a>
+        </div>
+    </div>
+</body>
+</html>
