@@ -1,35 +1,28 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Команда {{ team.name }} </title>
-    <link rel="stylesheet" href="{% static 'css/team_detail.css' %}">
+    <title>Team List</title>
+    <link rel="stylesheet" href="{% static 'css/list_teams.css' %}">
 </head>
 <body>
-    <div class="team-detail-container">
-        <h1 class="team-detail-title">Детали команды</h1>
-        <p class="team-detail-text"><strong>Название:</strong> {{ team.name }}</p>
-        <p class="team-detail-text"><strong>Описание:</strong> {{ team.description }}</p>
-
-        <!-- Список участников команды -->
-        <h2>Участники команды</h2>
-        <ul>
-            {% for member in team.members.all %}
-                <li>{{ member.first_name }} {{ member.last_name }}</li>
-            {% endfor %}
-        </ul>
-
-        <a href="{% url 'add_user_to_team' %}">Добавить пользователя в команду</a>
-
-        <!-- Форма редактирования команды -->
-        <h2>Редактировать команду</h2>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Сохранить изменения</button>
-        </form>
+    <div class="team-list-container">
+        <h1>List of Teams</h1>
+        {% if teams %}
+            <ul class="team-list">
+                {% for team in teams %}
+                    <li>
+                        <a href="{% url 'detail_team_view' pk=team.pk %}">
+                            {{ team.name }}
+                        </a>
+                        <p>Created by: {{ team.author }}</p>  <!-- Отображение UUID автора команды -->
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No teams found.</p>
+        {% endif %}
     </div>
 </body>
 </html>

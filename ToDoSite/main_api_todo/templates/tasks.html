@@ -11,14 +11,14 @@
     <h2>Личные задачи</h2>
     <ul>
         {% for task in personal_tasks %}
-            <li>{{ task.title }} - {{ task.description }}</li>
+            <li>{{ task.name }} - {{ task.description }}</li>
         {% endfor %}
     </ul>
 
     <h2>Командные задачи</h2>
     <ul>
         {% for task in team_tasks %}
-            <li>{{ task.title }} - {{ task.description }} ({{ task.team.name }})</li>
+            <li>{{ task.name }} - {{ task.description }} ({{ task.team.name }})</li>
         {% endfor %}
     </ul>
 </body>

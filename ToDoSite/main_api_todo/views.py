@@ -113,9 +113,10 @@ def create_team_view(request):
         form = TeamForm(request.POST)
         if form.is_valid():
             team = form.save(commit=False)
-            team.author = request.user.email  # Присвоение идентификатора текущего пользователя как автора
+            author = CustomUser.objects.get(id=request.user.id)
+            team.author = author
             team.save()
-            team.members.add(request.user)  # Добавление создателя в члены команды
+            team.members.add(request.user)  # Добавляем создателя в члены команды
             return redirect('team_list')  # Перенаправление на список команд или другую страницу
     else:
         form = TeamForm()
@@ -153,8 +154,8 @@ def task_list_view(request):
     personal_tasks = Task.objects.filter(created_by=request.user, task_type='personal')
     team_tasks = Task.objects.filter(created_by=request.user, task_type='team')
 
-    print("Personal tasks:", personal_tasks)  # Отладочное сообщение
-    print("Team tasks:", team_tasks)  # Отладочное сообщение
+    print("Personal tasks:", personal_tasks)
+    print("Team tasks:", team_tasks)
 
     return render(request, 'tasks.html', {
         'personal_tasks': personal_tasks,

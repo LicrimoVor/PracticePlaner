@@ -18,6 +18,7 @@ ALLOWED_HOSTS = []
 
 
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,11 +34,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
 
+    'main_api_todo',
 
-    "main_api_todo.apps.MainApiTodoConfig",
 
 ]
-
+AUTH_USER_MODEL = 'main_api_todo.CustomUser'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -185,4 +186,3 @@ SIMPLE_JWT = {
 
 
 
-AUTH_USER_MODEL = 'main_api_todo.CustomUser'

@@ -1,4 +1,4 @@
-<!-- templates/team_list.html -->
+<!-- templates/team-list.html -->
 
 {% load static %}
 <!DOCTYPE html>
@@ -15,7 +15,7 @@
             <ul class="team-list">
                 {% for team in teams %}
                     <li>
-                        <a href="{% url 'detail_team_view' pk=team.pk %}">
+                        <a href="{% url 'detail_team_view' pk=team.id %}">
                             {{ team.name }}
                         </a>
                         <p>Created by: {{ team.author }}</p>  <!-- Отображение почты автора команды -->

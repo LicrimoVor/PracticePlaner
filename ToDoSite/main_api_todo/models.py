@@ -30,17 +30,6 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
-
-class Team(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=255, null=False)
-    author = models.UUIDField()
-    description = models.CharField(max_length=255, null=False)
-
-    def __str__(self):
-        return self.name
-
-
 class CustomUser(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=255, null=False)
@@ -49,13 +38,23 @@ class CustomUser(AbstractUser):
     username = None
     password = models.CharField(max_length=255, null=False)
     email = models.EmailField(_('email address'), unique = True)
-    team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL, related_name='members', blank=True)
+    team = models.ForeignKey('Team', null=True, on_delete=models.SET_NULL, related_name='members', blank=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = CustomUserManager()
 
     def __str__(self):
         return self.email
+
+
+class Team(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255, null=False)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_teams')
+    description = models.CharField(max_length=255, null=False)
+
+    def __str__(self):
+        return self.name
 
 
 @receiver(pre_save, sender=Team)
