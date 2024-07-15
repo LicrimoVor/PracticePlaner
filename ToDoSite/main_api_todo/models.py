@@ -75,21 +75,26 @@ class Relationship(models.Model):
 
 class Task(models.Model):
     STATE_CHOICES = (
-        (0, 'Не в работе'),
-        (1, 'В работе'),
-        (2, 'Завершена'),
+        (0, 'Не готов'),
+        (1, 'Завершена'),
     )
+    TASK_TYPE_CHOICES = {
+        ('personal', 'Личная задача'),
+        ('team', 'Задача для команды'),
+    }
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, null=False)
     description = models.TextField(null=False)
     deadline = models.DateField(null=False)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='tasks')
+    task_type = models.CharField(max_length=10, choices=TASK_TYPE_CHOICES, default='personal')
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='tasks', null = True, blank = True)
     user = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL, related_name='tasks')
     changeable = models.IntegerField(
         choices=STATE_CHOICES,
         default=0,
         verbose_name='Состояние задачи',
-        help_text='0 - Не в работе, 1 - В работе, 2 - Завершена'
     )
 
     def __str__(self):

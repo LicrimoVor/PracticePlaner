@@ -1,3 +1,5 @@
+<!-- templates/team_list.html -->
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -16,6 +18,7 @@
                         <a href="{% url 'detail_team_view' pk=team.pk %}">
                             {{ team.name }}
                         </a>
+                        <p>Created by: {{ team.author }}</p>  <!-- Отображение почты автора команды -->
                     </li>
                 {% endfor %}
             </ul>

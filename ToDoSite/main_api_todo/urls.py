@@ -23,11 +23,12 @@ urlpatterns = [
     path ('profile/', views.profile_view, name = 'profile'),
     path('logout/',  views.login_view, name='logout'),
     path('edit-profile/', views.edit_profile, name='edit_profile'),
-    path('main_page/', views.main_page, name='main_page'),
+    path('main_page/', views.main_page, name='mainpage'),
     path('create-team/', views.create_team_view, name='create_team'),
     path('team-list/', views.team_list_view, name='team_list'),
     path('teams-detail/<uuid:pk>/', views.detail_team_view, name='detail_team_view'),
     path('create-task/', views.create_task_view, name='create_task'),
-
+    path('tasks-list/', views.task_list_view, name='tasks'),
     path('add_user_to_team/', views.add_user_to_team, name='add_user_to_team'),
+    path('my-teams/', views.my_teams_view, name='my_teams')
 ]

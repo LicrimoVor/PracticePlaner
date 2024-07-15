@@ -1,10 +1,25 @@
+<!-- templates/tasks/task_list.html -->
+
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Список задач</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
+    <h2>Личные задачи</h2>
+    <ul>
+        {% for task in personal_tasks %}
+            <li>{{ task.title }} - {{ task.description }}</li>
+        {% endfor %}
+    </ul>
 
+    <h2>Командные задачи</h2>
+    <ul>
+        {% for task in team_tasks %}
+            <li>{{ task.title }} - {{ task.description }} ({{ task.team.name }})</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

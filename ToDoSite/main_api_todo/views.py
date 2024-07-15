@@ -10,7 +10,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.shortcuts import render, redirect
 
-from .forms import CustomUserCreationForm, UserEditForm, TeamForm, TaskForm
+from .forms import CustomUserCreationForm, UserEditForm, TeamForm, TaskForm, AddUserToTeamForm
 from django.contrib.auth.decorators import login_required
 
 # Миксины для User
@@ -113,12 +113,13 @@ def create_team_view(request):
         form = TeamForm(request.POST)
         if form.is_valid():
             team = form.save(commit=False)
-            team.author = request.user.id
+            team.author = request.user.email  # Присвоение идентификатора текущего пользователя как автора
             team.save()
-            return redirect('main_page')  # Перенаправляем на главную страницу или другую страницу
+            team.members.add(request.user)  # Добавление создателя в члены команды
+            return redirect('team_list')  # Перенаправление на список команд или другую страницу
     else:
         form = TeamForm()
-    return render(request, 'CreateTeam.html', {'form': form})
+    return render(request, 'Createteam.html', {'form': form})
 @login_required
 def team_list_view (request):
     teams = Team.objects.all()
@@ -135,9 +136,43 @@ def create_task_view(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
-            task = form.save()
-            # Дополнительная логика после сохранения задачи
-            return redirect('task-list-create')  # Перенаправляем на список задач или другую страницу
+            task = form.save(commit=False)
+            task.created_by = request.user
+            if task.task_type == 'team' and not task.team:
+                form.add_error('team', 'Для командной задачи необходимо выбрать команду.')
+            else:
+                task.save()
+                print("ALEALEALEAELAELAEl")
+                return redirect('tasks')  # Перенаправьте на список задач или на другую нужную вам страницу
     else:
         form = TaskForm()
     return render(request, 'create_task.html', {'form': form})
+
+
+def task_list_view(request):
+    personal_tasks = Task.objects.filter(created_by=request.user, task_type='personal')
+    team_tasks = Task.objects.filter(created_by=request.user, task_type='team')
+
+    print("Personal tasks:", personal_tasks)  # Отладочное сообщение
+    print("Team tasks:", team_tasks)  # Отладочное сообщение
+
+    return render(request, 'tasks.html', {
+        'personal_tasks': personal_tasks,
+        'team_tasks': team_tasks,
+    })
+@login_required
+def add_user_to_team(request):
+    if request.method == 'POST':
+        form = AddUserToTeamForm(request.POST)
+        if form.is_valid():
+            user = form.cleaned_data['user']
+            team = form.cleaned_data['team']
+            team.members.add(user)
+            return redirect('detail_team_view', pk=team.pk)
+    else:
+        form = AddUserToTeamForm()
+    return render(request, 'add_user_to_team.html', {'form': form})
+@login_required
+def my_teams_view(request):
+    user_teams = Team.objects.filter(members=request.user)  # Получение всех команд, в которых состоит пользователь
+    return render(request, 'my_teams.html', {'user_teams': user_teams})

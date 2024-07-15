@@ -44,16 +44,20 @@ class TeamForm(forms.ModelForm):
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['name', 'description', 'deadline', 'team', 'user', 'changeable']
+        fields = ['name', 'description', 'deadline', 'task_type', 'team', 'changeable', 'created_by']
         labels = {
             'name': 'Название',
             'description': 'Описание',
             'deadline': 'Скроки',
             'team': 'Команда',
-            'user': 'Автор',
             'changeable': 'Изменяемость'
         }
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['team'].queryset = Team.objects.all()
+        self.fields['team'].required = False
+        self.fields['team'].widget.attrs.update({'class': 'form-control'})
+        self.fields['task_type'].widget.attrs.update({'class': 'form-control'})
 class AddUserToTeamForm(forms.Form):
     user = forms.ModelChoiceField(queryset=CustomUser.objects.all(), label="Пользователь")
     team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Команда")
