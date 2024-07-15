@@ -11,14 +11,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
 class CustomUserManager(BaseUserManager):
-    """
-    Custom user model manager where email is the unique identifiers
-    for authentication instead of usernames.
-    """
     def create_user(self, email, password, **extra_fields):
-        """
-        Create and save a User with the given email and password.
-        """
         if not email:
             raise ValueError(_('The Email must be set'))
         email = self.normalize_email(email)
@@ -28,9 +21,6 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, **extra_fields):
-        """
-        Create and save a SuperUser with the given email and password.
-        """
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -85,21 +75,26 @@ class Relationship(models.Model):
 
 class Task(models.Model):
     STATE_CHOICES = (
-        (0, 'Не в работе'),
-        (1, 'В работе'),
-        (2, 'Завершена'),
+        (0, 'Не готов'),
+        (1, 'Завершена'),
     )
+    TASK_TYPE_CHOICES = {
+        ('personal', 'Личная задача'),
+        ('team', 'Задача для команды'),
+    }
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, null=False)
     description = models.TextField(null=False)
     deadline = models.DateField(null=False)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='tasks')
+    task_type = models.CharField(max_length=10, choices=TASK_TYPE_CHOICES, default='personal')
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='tasks', null = True, blank = True)
     user = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL, related_name='tasks')
     changeable = models.IntegerField(
         choices=STATE_CHOICES,
         default=0,
         verbose_name='Состояние задачи',
-        help_text='0 - Не в работе, 1 - В работе, 2 - Завершена'
     )
 
     def __str__(self):

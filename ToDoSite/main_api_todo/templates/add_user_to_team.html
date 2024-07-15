@@ -1,0 +1,20 @@
+<!-- templates/add_user_to_team.html -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить пользователя в команду</title>
+    <link rel="stylesheet" href="{% static 'css/add_user_to_team.css' %}">
+</head>
+<body>
+    <h1>Добавить пользователя в команду</h1>
+    <form method="POST" action="{% url 'add_user_to_team' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Добавить</button>
+    </form>
+</body>
+</html>

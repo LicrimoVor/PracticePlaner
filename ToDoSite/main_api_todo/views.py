@@ -10,7 +10,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.shortcuts import render, redirect
 
-from .forms import CustomUserCreationForm, UserEditForm, TeamForm, TaskForm
+from .forms import CustomUserCreationForm, UserEditForm, TeamForm, TaskForm, AddUserToTeamForm
 from django.contrib.auth.decorators import login_required
 
 # Миксины для User
@@ -71,7 +71,7 @@ def register(request):
             return redirect('login')  # URL для перенаправления после регистрации
     else:
         form = CustomUserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'register.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':
@@ -79,16 +79,17 @@ def login_view(request):
         if form.is_valid():
             email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(request, username=email, password=password)
+            user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('profile')  # URL для перенаправления после входа
+                return redirect('main_page')  # URL для перенаправления после входа
     else:
         form = AuthenticationForm()
-    return render(request, 'registration/login.html', {'form': form})
+    return render(request, 'login.html', {'form': form})
 @login_required
 def profile_view(request):
-    return render(request, 'web/profile.html')
+    user = request.user
+    return render(request, 'profile.html', {'user': user})
 
 
 @login_required
@@ -101,42 +102,77 @@ def edit_profile(request):
     else:
         form = UserEditForm(instance=request.user)
 
-    return render(request, 'web/edit_profile.html', {'form': form})
+    return render(request, 'edit_profile.html', {'form': form})
 
 @login_required
 def main_page(request):
-    return render (request, 'web/mainpage.html')
+    return render (request, 'mainpage.html')
 @login_required
 def create_team_view(request):
     if request.method == 'POST':
         form = TeamForm(request.POST)
         if form.is_valid():
             team = form.save(commit=False)
-            team.author = request.user.id
+            team.author = request.user.email  # Присвоение идентификатора текущего пользователя как автора
             team.save()
-            return redirect('main_page')  # Перенаправляем на главную страницу или другую страницу
+            team.members.add(request.user)  # Добавление создателя в члены команды
+            return redirect('team_list')  # Перенаправление на список команд или другую страницу
     else:
         form = TeamForm()
-    return render(request, 'web/create_team.html', {'form': form})
+    return render(request, 'Createteam.html', {'form': form})
 @login_required
 def team_list_view (request):
     teams = Team.objects.all()
-    return render (request, 'web/list_teams.html', {'teams': teams})
+    return render (request, 'list_teams.html', {'teams': teams})
 @login_required
 def detail_team_view(request, pk):
     team = get_object_or_404(Team, pk=pk)
     context = {
         'team': team
     }
-    return render(request, 'web/team_detail.html', context)
+    return render(request, 'team_detail.html', context)
 @login_required
 def create_task_view(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
-            task = form.save()
-            # Дополнительная логика после сохранения задачи
-            return redirect('task-list-create')  # Перенаправляем на список задач или другую страницу
+            task = form.save(commit=False)
+            task.created_by = request.user
+            if task.task_type == 'team' and not task.team:
+                form.add_error('team', 'Для командной задачи необходимо выбрать команду.')
+            else:
+                task.save()
+                print("ALEALEALEAELAELAEl")
+                return redirect('tasks')  # Перенаправьте на список задач или на другую нужную вам страницу
     else:
         form = TaskForm()
-    return render(request, 'web/create_task.html', {'form': form})
+    return render(request, 'create_task.html', {'form': form})
+
+
+def task_list_view(request):
+    personal_tasks = Task.objects.filter(created_by=request.user, task_type='personal')
+    team_tasks = Task.objects.filter(created_by=request.user, task_type='team')
+
+    print("Personal tasks:", personal_tasks)  # Отладочное сообщение
+    print("Team tasks:", team_tasks)  # Отладочное сообщение
+
+    return render(request, 'tasks.html', {
+        'personal_tasks': personal_tasks,
+        'team_tasks': team_tasks,
+    })
+@login_required
+def add_user_to_team(request):
+    if request.method == 'POST':
+        form = AddUserToTeamForm(request.POST)
+        if form.is_valid():
+            user = form.cleaned_data['user']
+            team = form.cleaned_data['team']
+            team.members.add(user)
+            return redirect('detail_team_view', pk=team.pk)
+    else:
+        form = AddUserToTeamForm()
+    return render(request, 'add_user_to_team.html', {'form': form})
+@login_required
+def my_teams_view(request):
+    user_teams = Team.objects.filter(members=request.user)  # Получение всех команд, в которых состоит пользователь
+    return render(request, 'my_teams.html', {'user_teams': user_teams})

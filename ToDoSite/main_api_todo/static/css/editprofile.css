@@ -49,7 +49,43 @@ body {
     margin-bottom: 20px;
 }
 
-.main-content .icon {
-    width: 150px;
-    height: 150px;
+.profile-edit-form {
+    background-color: #444;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: left;
+}
+
+.profile-edit-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-edit-form label {
+    margin-bottom: 5px;
+    font-size: 18px;
+    color: #fff;
+}
+
+.profile-edit-form input {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.profile-edit-form button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #555;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.profile-edit-form button:hover {
+    background-color: #666;
 }

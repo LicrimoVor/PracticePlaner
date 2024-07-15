@@ -3,9 +3,26 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser, Team, Task
 
 class CustomUserCreationForm(UserCreationForm):
+    password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Подтвердите пароль', widget=forms.PasswordInput)
+
     class Meta:
         model = CustomUser
-        fields = ('email', 'password1', 'password2')
+        fields = ('first_name', 'last_name', 'email')
+    labels = {
+        'first_name': 'Имя',
+        'last_name': 'Фамилия',
+        'second_name': 'Отчество'
+    }
+
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Пароли не совпадают")
+        return password2
+
 class UserEditForm(forms.ModelForm):
     class Meta:
         model = CustomUser
@@ -27,12 +44,25 @@ class TeamForm(forms.ModelForm):
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['name', 'description', 'deadline', 'team', 'user', 'changeable']
+        fields = ['name', 'description', 'deadline', 'task_type', 'team', 'changeable', 'created_by']
         labels = {
             'name': 'Название',
             'description': 'Описание',
             'deadline': 'Скроки',
             'team': 'Команда',
-            'user': 'Автор',
             'changeable': 'Изменяемость'
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['team'].queryset = Team.objects.all()
+        self.fields['team'].required = False
+        self.fields['team'].widget.attrs.update({'class': 'form-control'})
+        self.fields['task_type'].widget.attrs.update({'class': 'form-control'})
+class AddUserToTeamForm(forms.Form):
+    user = forms.ModelChoiceField(queryset=CustomUser.objects.all(), label="Пользователь")
+    team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Команда")
+
+class TeamForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ['name', 'description']

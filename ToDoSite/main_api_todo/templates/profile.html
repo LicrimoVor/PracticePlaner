@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li><a href="{% url 'profile' %}">Профиль</a></li>
+                <li><a href="#">Мои задачи</a></li>
+                <li><a href="#">Команды</a></li>
+                <li><a href="{% url 'create_team' %}">Создать команду</a></li>
+                <li><a href="{% url 'create_task' %}">Создать задачу</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h1>Профиль</h1>
+            <div class="profile-info">
+                <p><strong>Имя:</strong> {{ user.first_name }}</p>
+                <p><strong>Фамилия:</strong> {{ user.last_name }}</p>
+                <p><strong>Электронная почта:</strong> {{ user.email }}</p>
+                <a href="{% url 'edit_profile' %}" class="edit-button">Редактировать профиль</a>
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>

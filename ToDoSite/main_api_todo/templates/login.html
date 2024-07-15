@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="registration-form">
+            <img src="{% static 'images/note.png' %}" alt="Notepad Icon" class="icon">
+            <h1>Уже зарегистрированы?</h1>
+            <form method="POST" action="{% url 'login' %}" >
+                {% csrf_token %}
+                <input type="email" name="username" placeholder="Электронная почта" required>
+                <input type="password" name="password" placeholder="Пароль" required> 
+                <button type="submit">Авторизация</button>
+            </form>
+            <a href="/register/" class="login-link">Перейти к регистрации</a>
+        </div>
+    </div>
+</body>
+</html>

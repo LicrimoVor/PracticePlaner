@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logout</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+    <h2>Подтвердить выход</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Подтвердить выход</button>
+    </form>
+</body>
+</html>
